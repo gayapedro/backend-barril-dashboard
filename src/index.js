@@ -12,5 +12,5 @@ app.use(cors());
 app.use(rotasCategoria);
 app.use(rotasUsuario);
 app.use(rotasProduto);
-app.use(rotasPedidos)
-app.listen(3000);
+app.use(rotasPedidos);
+app.listen(process.env.PORT || 3000);
