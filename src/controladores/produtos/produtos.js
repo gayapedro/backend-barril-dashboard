@@ -1,6 +1,6 @@
 const knex = require('../../conexao');
 const { uploadImagem, excluiImagem } = require('../../upload/uploads');
-import { v4 as uuidv4 } from 'uuid';
+const { v4: uuidv4 } = require('uuid');
 
 async function listarProdutos(req, res) {
   const { id: usuario_id } = req.usuario;
