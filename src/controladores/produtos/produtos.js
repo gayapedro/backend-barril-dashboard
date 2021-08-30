@@ -1,5 +1,6 @@
 const knex = require('../../conexao');
 const { uploadImagem, excluiImagem } = require('../../upload/uploads');
+import { v4 as uuidv4 } from 'uuid';
 
 async function listarProdutos(req, res) {
   const { id: usuario_id } = req.usuario;
@@ -58,13 +59,15 @@ async function inserirProduto(req, res) {
       .where({ usuario_id })
       .first();
 
-    const produtoExiste = await knex('produto').where({ restaurante_id}).andWhere('nome','ilike',nome);
+    const produtoExiste = await knex('produto')
+      .where({ restaurante_id })
+      .andWhere('nome', 'ilike', nome);
 
     if (produtoExiste.length > 0) {
       return res.status(400).json('O produto já está cadastrado.');
     }
 
-    const imagemNome = `produtos/${`${nome.replace(' ', '')}${Date.now()}`}`;
+    const imagemNome = `produtos/${`${uuidv4()}?${Date.now()}`}`;
     let imagemNova;
 
     if (imagem) {
@@ -115,7 +118,7 @@ async function alterarProduto(req, res) {
       return res.status(404).json('O produto não foi encontrado!');
     }
 
-    const imagemNome = `produtos/${`${nome.replace(' ', '')}${Date.now()}`}`;
+    const imagemNome = `produtos/${`${uuidv4()}?${Date.now()}`}`;
     let imagemNova;
 
     if (imagem) {
@@ -124,15 +127,13 @@ async function alterarProduto(req, res) {
       imagemNova = linkImagem.replace('co', 'in');
     }
 
-    const queryParaAtualizar = await knex('produto')
-      .where({ id })
-      .update({
-        nome,
-        descricao,
-        preco,
-        permite_observacoes,
-        imagem: imagemNova,
-      });
+    const queryParaAtualizar = await knex('produto').where({ id }).update({
+      nome,
+      descricao,
+      preco,
+      permite_observacoes,
+      imagem: imagemNova,
+    });
 
     if (queryParaAtualizar.length === 0) {
       return res.status(400).json('Erro na atualização.');
